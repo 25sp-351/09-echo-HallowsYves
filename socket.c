@@ -29,11 +29,15 @@ int createSocket(int port) {
 
     int returnval;
 
-    returnval = bind(
-        socket_fd, (struct sockaddr*)&socket_address, sizeof(socket_address));
-    if (returnval < 0) {
-        perror("bind");
-        return 1;
+    if (bind(socket_fd, (struct sockaddr*)&socket_address, sizeof(socket_address)) < 0) {
+        perror("bind failed");
+        return -1;
     }
-    return returnval;
+    
+    if (listen(socket_fd, SOMAXCONN) < 0) {
+        perror("listen failed");
+        return -1;
+    }
+    
+    return socket_fd; 
 }
